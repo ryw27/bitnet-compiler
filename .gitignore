@@ -1,3 +1,5 @@
+__pycache__/
+
 models/
 notes/
 
@@ -5,3 +7,8 @@ notes/
 .venv/
 __pycache__/
 *.py[cod]
+
+build/
+
+*.bin
+*.safetensors
