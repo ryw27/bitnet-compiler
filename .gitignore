@@ -1,14 +1,14 @@
-__pycache__/
-
 models/
-notes/
+
+build/
+
+*.bin
+*.safetensors
 
 # Python
 .venv/
 __pycache__/
 *.py[cod]
 
-build/
-
-*.bin
-*.safetensors
+# miscellaneous
+notes/
