@@ -4,7 +4,6 @@ import sys
 import time
 from pathlib import Path
 
-import torch
 from safetensors.torch import save_file
 
 from .errors import FrontendError
@@ -46,8 +45,6 @@ def main(argv: list[str] | None = None) -> int:
         print(result.program.graph_module.print_readable(print_output=False))
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    # Load with torch.export.load after importing frontend.ops.bitnet, which registers bitnet::bitlinear.
-    torch.export.save(result.program, str(out_dir / "program.pt2"))
     final_logits = {f"len_{len(p)}": r[0, -1].contiguous() for p, r in zip(result.prompts, result.references)}
     save_file(final_logits, str(out_dir / "reference_logits.safetensors"))
 
