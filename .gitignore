@@ -1,6 +1,7 @@
 models/
 
 build/
+.cache/
 
 *.bin
 *.safetensors
