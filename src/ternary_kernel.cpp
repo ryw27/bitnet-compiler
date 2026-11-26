@@ -1,7 +1,7 @@
 #include "ternary_kernel.h"
+#include <torch/extension.h>
 #include <cmath>
-#include <memory>
-#include <numeric>
+
 
 float max_abs_matrix_val(const float *matrix, size_t total_elements) {
     float result = 0.0f;
@@ -38,6 +38,7 @@ void clip_non_negative(const float *input, int8_t *output, float inverse_scale,
     }
 }
 
+// TODO Wonder if quantize into int16_t or int32_t would be better than 8-bit integers
 float quantize_activations(const float *input, int8_t *output, size_t bits,
                            size_t height, size_t width) {
     // * int8 [-128, 127]
@@ -50,6 +51,8 @@ float quantize_activations(const float *input, int8_t *output, size_t bits,
     return quant_mult;
 }
 
-void ternary_matrix_vec_add(int8_t *input, size_t height, size_t width) {}
+void ternary_matrix_vec_add(int8_t *input, size_t height, size_t width) {
+
+}
 
 int main() {}
