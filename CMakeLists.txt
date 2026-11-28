@@ -21,3 +21,15 @@ target_compile_definitions(bitnet_ops PRIVATE TORCH_EXTENSION_NAME=bitnet_ops)
 target_compile_options(bitnet_ops PRIVATE ${TORCH_CXX_FLAGS})
 target_link_libraries(bitnet_ops PRIVATE ${TORCH_LIBRARIES} ${TORCH_PYTHON_LIBRARY})
 set_target_properties(bitnet_ops PROPERTIES BUILD_RPATH "${TORCH_INSTALL_PREFIX}/lib")
+
+# --- OpenMP ---
+# Apple clang has no bundled OpenMP runtime; point FindOpenMP at Homebrew's libomp.
+if(APPLE AND NOT DEFINED OpenMP_ROOT)
+  execute_process(COMMAND brew --prefix libomp
+    OUTPUT_VARIABLE OpenMP_ROOT OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+endif()
+find_package(OpenMP REQUIRED COMPONENTS CXX)
+
+add_executable(parallelization cpp/src/parallelization.cpp)
+target_include_directories(parallelization PRIVATE cpp/include)
+target_link_libraries(parallelization PRIVATE OpenMP::OpenMP_CXX)
