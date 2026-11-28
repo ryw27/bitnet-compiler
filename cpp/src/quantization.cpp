@@ -5,7 +5,7 @@
 namespace quant {
 float max_abs_matrix_val(const float *matrix, int64_t total_elements) {
     float result = at::parallel_reduce(
-        0, total_elements, kernel::grain_size(total_elements), 0.0f,
+        0, total_elements, bitnet::grain_size(total_elements), 0.0f,
         [&](int64_t begin, int64_t end, float init) -> float {
             float intermediate = init;
             for (int64_t i = begin; i < end; ++i) {
@@ -20,7 +20,7 @@ float max_abs_matrix_val(const float *matrix, int64_t total_elements) {
 void clip(const float *input, int8_t *output, float inverse_scale, int64_t matrix_size, float upper,
           float lower) {
     // TODO Determine Grain Size dynammically depending on input and workload
-    at::parallel_for(0, matrix_size, kernel::grain_size(matrix_size), [&](int64_t begin, int64_t end) {
+    at::parallel_for(0, matrix_size, bitnet::grain_size(matrix_size), [&](int64_t begin, int64_t end) {
         for (int64_t i = begin; i < end; ++i) {
             float elt = *(input + i);
             float scaled = std::nearbyint(elt * inverse_scale);
@@ -47,7 +47,7 @@ float quantize_activations(const float *input, int8_t *output, int bits, int64_t
 void dequantize_activations(const int8_t *input, float *output, float scale_factor, int64_t height,
                             int64_t width) {
     size_t total_elements = height * width;
-    at::parallel_for(0, total_elements, kernel::grain_size(total_elements), [&](int64_t begin, int64_t end) {
+    at::parallel_for(0, total_elements, bitnet::grain_size(total_elements), [&](int64_t begin, int64_t end) {
         for (int64_t i = begin; i < end; ++i) {
             output[i] = input[i] * scale_factor;
         }
